@@ -1,0 +1,41 @@
+---
+# role: krb5
+# file: molecule/resources/playbooks/prepare.yml
+
+- name: KRB5 | Prepare conflicting distribution snippets
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: KRB5 | Refresh Debian package metadata
+      become: true
+      become_user: root
+      ansible.builtin.apt:
+        update_cache: true
+      when: ansible_facts.pkg_mgr == 'apt'
+
+    - name: KRB5 | Create the fixture include directory
+      become: true
+      become_user: root
+      ansible.builtin.file:
+        path: /etc/krb5.conf.d
+        state: directory
+        mode: '0755'
+
+    - name: KRB5 | Supply conflicting and supplementary library defaults
+      become: true
+      become_user: root
+      ansible.builtin.copy:
+        dest: /etc/krb5.conf.d/molecule.conf
+        mode: '0644'
+        content: |
+          [libdefaults]
+              default_realm = WRONG.EXAMPLE.TEST
+              default_ccache_name = KCM:
+              dns_lookup_kdc = false
+              dns_lookup_realm = true
+              dns_canonicalize_hostname = true
+              rdns = true
+              ticket_lifetime = 10h
+          [domain_realm]
+              ad.example.test = WRONG.EXAMPLE.TEST
+              .ad.example.test = WRONG.EXAMPLE.TEST

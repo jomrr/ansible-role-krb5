@@ -1,0 +1,6 @@
+---
+# role: krb5
+# file: vars/Debian.yml
+
+__krb5_package: krb5-user
+__krb5_ccache: 'FILE:/tmp/krb5cc_%{uid}'

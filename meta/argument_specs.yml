@@ -1,0 +1,21 @@
+---
+# role: krb5
+# file: meta/argument_specs.yml
+
+argument_specs:
+  main:
+    short_description: Install the Kerberos client and manage its system configuration.
+    options:
+      krb5_realm:
+        type: str
+        description: Default Kerberos realm and DNS domain for explicit realm mappings.
+        required: true
+      krb5_dns_lookup_kdc:
+        type: bool
+        description: Discover KDCs through DNS SRV records; disable for standalone GSSAPI
+          acceptors.
+        default: true
+      krb5_default_keytab:
+        type: path
+        description: Optional Kerberos library default keytab path; the role does not create
+          or manage keytabs.

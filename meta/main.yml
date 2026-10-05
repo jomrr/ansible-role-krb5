@@ -1,0 +1,17 @@
+---
+# role: krb5
+# file: meta/main.yml
+
+galaxy_info:
+  author: Jonas Mauer
+  description: Configure MIT Kerberos clients for domain members and standalone GSSAPI acceptors.
+  galaxy_tags:
+    - kerberos
+    - authentication
+    - gssapi
+    - activedirectory
+  issue_tracker_url: https://github.com/jomrr/ansible-role-krb5/issues
+  license: MIT
+  min_ansible_version: "2.20"
+  namespace: jomrr
+  role_name: krb5

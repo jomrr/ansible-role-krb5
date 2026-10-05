@@ -1,0 +1,10 @@
+---
+# role: krb5
+# file: molecule/resources/playbooks/converge.yml
+
+- name: KRB5 | Configure member library defaults
+  hosts: all
+  gather_facts: true
+  roles:
+    - role: "{{ lookup('ansible.builtin.env', 'MOLECULE_PROJECT_DIRECTORY') }}"
+      krb5_default_keytab: /etc/krb5-member.keytab

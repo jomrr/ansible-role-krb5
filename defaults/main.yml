@@ -1,0 +1,12 @@
+---
+# role: krb5
+# file: defaults/main.yml
+
+# Default Kerberos realm and DNS domain for explicit realm mappings.
+# krb5_realm: AD.EXAMPLE.COM
+
+# Discover KDCs through DNS SRV records; disable for standalone GSSAPI acceptors.
+krb5_dns_lookup_kdc: true
+
+# Optional Kerberos library default keytab path; the role does not create or manage keytabs.
+# krb5_default_keytab: /etc/krb5.keytab

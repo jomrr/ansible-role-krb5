@@ -1,0 +1,6 @@
+---
+# role: krb5
+# file: vars/RedHat.yml
+
+__krb5_package: krb5-workstation
+__krb5_ccache: 'KEYRING:persistent:%{uid}'

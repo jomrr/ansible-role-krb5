@@ -1,0 +1,24 @@
+---
+# role: krb5
+# file: molecule/resources/playbooks/side_effect.yml
+
+- name: KRB5 | Change to a standalone DMZ acceptor
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: KRB5 | Disable KDC discovery and remove the explicit default keytab
+      ansible.builtin.include_role:
+        name: "{{ lookup('ansible.builtin.env', 'MOLECULE_PROJECT_DIRECTORY') }}"
+      vars:
+        krb5_dns_lookup_kdc: false
+
+    - name: KRB5 | Resolve the standalone acceptor configuration with MIT Kerberos
+      become: true
+      become_user: root
+      ansible.builtin.script:
+        cmd: >-
+          ../verify_kerberos.py --realm {{ krb5_realm }}
+          --ccache-type {{ (ansible_facts.os_family == 'Debian') | ternary('FILE', 'KEYRING') }}
+          --keytab /etc/krb5.keytab --dns-lookup-kdc false
+        executable: python3
+      changed_when: false

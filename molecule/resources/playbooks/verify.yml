@@ -1,0 +1,18 @@
+---
+# role: krb5
+# file: molecule/resources/playbooks/verify.yml
+
+- name: KRB5 | Verify native member configuration and include precedence
+  hosts: all
+  gather_facts: true
+  tasks:
+    - name: KRB5 | Resolve effective settings with MIT Kerberos
+      become: true
+      become_user: root
+      ansible.builtin.script:
+        cmd: >-
+          ../verify_kerberos.py --realm {{ krb5_realm }}
+          --ccache-type {{ (ansible_facts.os_family == 'Debian') | ternary('FILE', 'KEYRING') }}
+          --keytab /etc/krb5-member.keytab --dns-lookup-kdc true
+        executable: python3
+      changed_when: false

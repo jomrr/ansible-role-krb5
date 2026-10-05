@@ -1,0 +1,19 @@
+# Managed by ansible.
+# file: {{ template_destpath }}
+
+[libdefaults]
+    default_realm = {{ krb5_realm | upper }}
+{% if krb5_default_keytab is defined %}
+    default_keytab_name = FILE:{{ krb5_default_keytab }}
+{% endif %}
+    default_ccache_name = {{ __krb5_ccache }}
+    dns_lookup_kdc = {{ krb5_dns_lookup_kdc | bool | lower }}
+    dns_lookup_realm = false
+    dns_canonicalize_hostname = false
+    rdns = false
+
+[domain_realm]
+    {{ krb5_realm | lower }} = {{ krb5_realm | upper }}
+    .{{ krb5_realm | lower }} = {{ krb5_realm | upper }}
+
+includedir /etc/krb5.conf.d
