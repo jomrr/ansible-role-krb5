@@ -17,8 +17,6 @@
   ansible.builtin.package:
     name: "{{ __krb5_package }}"
     state: present
-  environment:
-    DEBIAN_FRONTEND: noninteractive
 
 - name: KRB5 | Create the configuration include directory
   become: true

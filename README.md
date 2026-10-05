@@ -35,7 +35,8 @@ accepting GSSAPI tickets.
 
 ## Requirements
 
-- Run krb5 before sssd or samba_ad_member in the playbook, using the same realm.
+- jomrr.sssd and jomrr.samba_ad_member invoke this role internally before
+  joining, passing their configured realm.
 - Domain members need working DNS SRV discovery for their KDCs.
 - Standalone HTTP GSSAPI acceptors need an HTTP service principal and matching
   keytab supplied by the httpd role.
@@ -112,9 +113,9 @@ No daemon or consumer restart is managed by this role.
   snippet or environment override, the library uses its platform default,
   normally FILE:/etc/krb5.keytab. No keytab is created by this role.
 - samba_ad_member with kerberos method=secrets and keytab writes to the library
-  default keytab. Set krb5_default_keytab and samba_ad_member_keytab_path to the
-  same path when choosing a non-default location. SSSD and adcli use sssd_keytab
-  explicitly and do not require krb5_default_keytab.
+  default keytab. It passes samba_ad_member_keytab_path as krb5_default_keytab
+  to keep both paths aligned. SSSD and adcli use sssd_keytab explicitly and do
+  not require krb5_default_keytab.
 - A DMZ HTTP service can accept client service tickets using its own keytab
   without joining AD or contacting a KDC. Set krb5_dns_lookup_kdc=false and
   leave krb5_default_keytab unset; configure the service keytab in httpd.
@@ -139,7 +140,7 @@ No daemon or consumer restart is managed by this role.
 
 ### SSSD domain member
 
-Configure Kerberos before joining; SSSD manages its own explicit keytab path.
+SSSD invokes this role before joining and manages its own explicit keytab path.
 
 ```yaml
 ---
@@ -147,8 +148,6 @@ Configure Kerberos before joining; SSSD manages its own explicit keytab path.
   hosts: workstations
   gather_facts: true
   roles:
-    - role: jomrr.krb5
-      krb5_realm: AD.EXAMPLE.COM
     - role: jomrr.sssd
       sssd_realm: AD.EXAMPLE.COM
       sssd_join_password: "{{ vault_ad_join_password }}"
@@ -164,9 +163,6 @@ Keep the library default and Samba's managed keytab path aligned.
   hosts: fileservers
   gather_facts: true
   roles:
-    - role: jomrr.krb5
-      krb5_realm: AD.EXAMPLE.COM
-      krb5_default_keytab: /etc/samba/member.keytab
     - role: jomrr.samba_ad_member
       samba_ad_member_realm: AD.EXAMPLE.COM
       samba_ad_member_domain: EXAMPLE
